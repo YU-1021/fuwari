@@ -108,11 +108,6 @@ export type ExpressiveCodeConfig = {
 	theme: string;
 };
 
-export type GitHubEditConfig = {
-	enable: boolean;
-	baseUrl: string;
-};
-
 export type NoticeConfig = {
 	enable: boolean;
 	level:

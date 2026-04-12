@@ -5,7 +5,6 @@ import {
 	BANNER_HEIGHT_HOME,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
-import { bindPostInlineDiff } from "../scripts/post-inline-diff";
 import {
 	getBgBlur,
 	getHideBg,
@@ -118,7 +117,6 @@ function init() {
 }
 
 init();
-bindPostInlineDiff();
 setupLinkInterceptor();
 
 const setup = async () => {

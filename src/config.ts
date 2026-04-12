@@ -1,6 +1,5 @@
 import type {
 	ExpressiveCodeConfig,
-	GitHubEditConfig,
 	ImageFallbackConfig,
 	LicenseConfig,
 	NavBarConfig,
@@ -61,7 +60,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		// Leave this array empty to use the default favicon
 		{
-			src: "https://avatars.githubusercontent.com/u/136226133?v=4", // Path of the favicon, relative to the /public directory
+			src: "/avatar.png", // Path of the favicon, relative to the /public directory
 			//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		},
 	],
@@ -90,7 +89,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://avatars.githubusercontent.com/u/136226133?v=4", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "/avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Yu",
 	bio: "本站是一个个人博客，在这里你可以找到技术分享与实践经验。",
 	links: [
@@ -131,11 +130,6 @@ export const imageFallbackConfig: ImageFallbackConfig = {
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	theme: "github-dark",
-};
-
-export const gitHubEditConfig: GitHubEditConfig = {
-	enable: true,
-	baseUrl: "https://github.com/afoim/fuwari/blob/main/src/content/posts",
 };
 
 // todoConfig removed from here

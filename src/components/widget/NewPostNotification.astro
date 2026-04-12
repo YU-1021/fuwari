@@ -75,17 +75,7 @@ import { Icon } from "astro-icon/components";
 </div>
 
 <script>
-    import * as Diff from 'diff';
-
     (async function() {
-    const __diffLogEnabled = (() => {
-        try {
-            const sp = new URLSearchParams(window.location.search);
-            return sp.get('__diff_log') === '1';
-        } catch {
-            return false;
-        }
-    })();
     const BASE_URL = import.meta.env.BASE_URL || '/';
     const basePath = String(BASE_URL).endsWith('/') ? String(BASE_URL).slice(0, -1) : String(BASE_URL);
     const withBasePath = (pathname) => {
@@ -95,21 +85,6 @@ import { Icon } from "astro-icon/components";
         return `${basePath}${p}`;
     };
 
-    const sp = new URLSearchParams(window.location.search);
-    if (sp.get('__diff_debug_cleanup') === '1') {
-        try {
-            indexedDB.deleteDatabase('fuwari-rss-store');
-        } catch {
-        }
-        try {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('__diff_debug_cleanup');
-            history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-        } catch {
-        }
-        return;
-    }
-    if (sp.get('__diff_debug') === '1') return;
     const DB_NAME = 'fuwari-rss-store';
     const DB_VERSION = 4; 
     const STORE_OLD = 'posts';
@@ -118,11 +93,9 @@ import { Icon } from "astro-icon/components";
     const NOTIFICATION_ID = 'new-post-notification';
     const LIST_ID = 'new-post-list';
     
-    // Compute a context-aware ID for the current site/path
     const BASE_PATH = (import.meta.env.BASE_URL ?? '/');
     const SCOPE_ID = BASE_PATH.replace(/^\/+|\/+$/g, '') || 'root';
 
-    // IndexedDB Helpers
     function openDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -159,7 +132,6 @@ import { Icon } from "astro-icon/components";
     }
 
     function generateId(guid) {
-        // Create a unique ID combining the scope (pathname root) and the article guid
         return `${SCOPE_ID}:${guid}`;
     }
 
@@ -198,7 +170,6 @@ import { Icon } from "astro-icon/components";
         });
     }
 
-    // Helper to get current RSS items
     async function fetchRSS() {
         try {
             const response = await fetch('/rss.xml', { cache: 'no-store' });
@@ -223,21 +194,13 @@ import { Icon } from "astro-icon/components";
                 let rawGuid = (item.querySelector('guid')?.textContent || '').trim();
                 const pubDate = new Date(item.querySelector('pubDate')?.textContent || '').getTime();
                 let description = item.querySelector('description')?.textContent || '';
-                
-                // Try to get content from multiple possible sources to ensure we capture it
-                let contentEncoded = item.getElementsByTagNameNS('http://purl.org/rss/1.0/modules/content/', 'encoded')[0]?.textContent;
-                let content = contentEncoded || 
-                                item.getElementsByTagName('content:encoded')[0]?.textContent || 
-                                item.querySelector('content')?.textContent || '';
 
-                // Replace production origin with current origin
                 if (prodOrigin && prodOrigin !== currentOrigin) {
                     link = link.replaceAll(prodOrigin, currentOrigin);
                     if (rawGuid.includes(prodOrigin)) {
                         rawGuid = rawGuid.replaceAll(prodOrigin, currentOrigin);
                     }
                     description = description.replaceAll(prodOrigin, currentOrigin);
-                    content = content.replaceAll(prodOrigin, currentOrigin);
                 }
 
                 const guid = normalizeGuid(rawGuid || link, link);
@@ -247,8 +210,7 @@ import { Icon } from "astro-icon/components";
                     link,
                     guid,
                     pubDate,
-                    description,
-                    content // Full content is stored here
+                    description
                 };
             });
         } catch (e) {
@@ -257,65 +219,6 @@ import { Icon } from "astro-icon/components";
         }
     }
 
-    // Helper to compute raw diff (keep <content:encoded> HTML to preserve images)
-    function computeDiff(oldText, newText) {
-        if (!oldText || !newText) return null;
-
-        const normalizeRaw = (text) => {
-            const s = String(text || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-            const lines = s.split("\n").map((line) => line.replace(/[ \t]+$/g, ""));
-            return lines.join("\n").trim();
-        };
-
-        const normalizeForDiffHtml = (html) => {
-            const raw = normalizeRaw(html);
-            if (!raw) return "";
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(`<div>${raw}</div>`, "text/html");
-            const root = doc.body.firstElementChild;
-            if (!root) return raw;
-
-            const lines = [];
-            for (const el of Array.from(root.children)) {
-                const htmlLine = String(el.outerHTML || "")
-                    .replace(/\r\n/g, "\n")
-                    .replace(/\r/g, "\n")
-                    .replace(/\n+/g, " ")
-                    .replace(/[ \t]+/g, " ")
-                    .trim();
-                if (!htmlLine) continue;
-                lines.push(htmlLine);
-            }
-
-            return lines.join("\n");
-        };
-
-        const cleanOld = normalizeForDiffHtml(oldText);
-        const cleanNew = normalizeForDiffHtml(newText);
-
-        if (!cleanOld || !cleanNew) return null;
-
-        // Use 'diff' library to compute line-by-line diff
-        const diffs = Diff.diffLines(cleanOld, cleanNew);
-        
-        const hasChanges = diffs.some(part => part.added || part.removed);
-        
-        if (!hasChanges) return null;
-
-        return diffs;
-    }
-
-    function escapeHtml(text) {
-        if (!text) return text;
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    // Helper to show notification
     function showNotification(newPosts, timestamp, isFresh, initTime) {
         const minimizedBtn = document.getElementById('notification-minimized');
         const panel = document.getElementById('notification-panel');
@@ -336,7 +239,6 @@ import { Icon } from "astro-icon/components";
         const initTimeStr = new Date(initTime).toLocaleString();
         const checkTimeStr = new Date(timestamp).toLocaleString();
 
-        // Logic for "No updates"
         if (newPosts.length === 0) {
              list.innerHTML = `<div class="text-center text-gray-400 py-4">
                 <p class="text-sm font-medium mb-2">暂无文章更新</p>
@@ -346,46 +248,25 @@ import { Icon } from "astro-icon/components";
              </div>`;
              dot?.classList.add('scale-0');
              
-             // Setup event listeners even if no posts (so it can be opened)
              setupEventListeners();
              return;
         }
         
-        // Show timestamp header
         let html = `
             <div class="text-xs text-gray-400 mb-2 px-1 flex flex-col gap-0.5">
-                <div class="font-medium">发现更新</div>
+                <div class="font-medium">发现新文章</div>
                 <div class="opacity-70 text-[10px]">${initTimeStr} - ${checkTimeStr}</div>
             </div>`;
         
         newPosts.forEach(post => {
-            const isUpdated = post.isUpdated;
-            const badge = isUpdated 
-                ? '<span class="text-xs bg-blue-900 text-blue-300 px-1.5 py-0.5 rounded ml-2">更新</span>'
-                : '<span class="text-xs bg-green-900 text-green-300 px-1.5 py-0.5 rounded ml-2">新文章</span>';
-            
-            // Convert absolute URL to relative path
             let postLink = post.link;
             try {
                 const url = new URL(post.link);
                 postLink = url.pathname;
             } catch {
-                // Keep original if not a valid URL
             }
 
-            let postHref = postLink;
-            if (isUpdated && post.diff) {
-                try {
-                    const url = new URL(postLink, window.location.origin);
-                    url.searchParams.set('diff', '1');
-                    url.hash = 'post-diff';
-                    postHref = `${url.pathname}${url.search}${url.hash}`;
-                } catch {
-                    const base = postLink.split('#')[0];
-                    postHref = base.includes('?') ? `${base}&diff=1#post-diff` : `${base}?diff=1#post-diff`;
-                }
-            }
-            postHref = withBasePath(postHref);
+            const postHref = withBasePath(postLink);
 
             html += `
             <div>
@@ -394,7 +275,7 @@ import { Icon } from "astro-icon/components";
                         ${post.title}
                     </a>
                     <div class="flex items-center shrink-0">
-                        ${badge}
+                        <span class="text-xs bg-green-900 text-green-300 px-1.5 py-0.5 rounded ml-2">新文章</span>
                     </div>
                 </div>
             </div>`;
@@ -402,10 +283,8 @@ import { Icon } from "astro-icon/components";
 
         list.innerHTML = html;
         
-        // Show red dot if there are any posts with changes
         if (newPosts.length > 0) {
              dot?.classList.remove('scale-0');
-             // Auto-open panel only on first detection (isFresh)
              if (isFresh) {
                  setTimeout(() => {
                      openPanel();
@@ -533,36 +412,17 @@ import { Icon } from "astro-icon/components";
                 panel.setAttribute('data-resize-listening', 'true')
             }
         }
-        
-        // Auto-open panel on first load if it's high priority? 
-         // Or keep it minimized to be less intrusive?
-         // Let's auto-open it briefly to catch attention, then user can minimize
      }
 
-    // Main logic
     try {
-        // Developer Mode Check
         const urlParams = new URLSearchParams(window.location.search);
         const isDevMode = urlParams.has('debug-notification');
 
         if (isDevMode) {
             console.log('[Notification] Developer mode active');
-            const mockDiff = [
-                { value: "This is some unchanged text context.\n", added: undefined, removed: undefined },
-                { value: "This line was removed.\n", added: undefined, removed: true },
-                { value: "This line is new.\n", added: true, removed: undefined },
-                { value: "More unchanged text.\n", added: undefined, removed: undefined }
-            ];
-            
             const mockPosts = [
-                { title: 'Test New Post 1', link: '#', guid: 'test-1', isUpdated: false },
-                { 
-                    title: 'Test Updated Post', 
-                    link: '#', 
-                    guid: 'test-2', 
-                    isUpdated: true,
-                    diff: mockDiff
-                },
+                { title: 'Test New Post 1', link: '#', guid: 'test-1' },
+                { title: 'Test New Post 2', link: '#', guid: 'test-2' },
             ];
             showNotification(mockPosts, Date.now(), true, Date.now());
             return; 
@@ -583,7 +443,6 @@ import { Icon } from "astro-icon/components";
         const NOTIFICATION_STATE_KEY = 'fuwari-notification-state';
         const INIT_TIME_KEY = 'fuwari-notification-init-time';
 
-        // Helper to get or set init time
         let initTimestamp = localStorage.getItem(INIT_TIME_KEY);
         if (!initTimestamp) {
             initTimestamp = Date.now().toString();
@@ -591,32 +450,26 @@ import { Icon } from "astro-icon/components";
         }
         const initTime = parseInt(initTimestamp);
 
-        // Migration from localStorage (Old cache)
         const localCache = localStorage.getItem(LOCAL_STORAGE_KEY);
         if (storedPostsOld.length === 0 && localCache) {
             console.log('[Notification] Migrating from localStorage...');
-            // Just init DB and clear old cache
             await clearStore(db, STORE_OLD);
             await savePosts(db, STORE_OLD, currentPosts);
             await clearStore(db, STORE_NEW);
             localStorage.removeItem(LOCAL_STORAGE_KEY);
-            // Treat as first visit (no updates)
             showNotification([], Date.now(), false, initTime); 
             return;
         }
 
         if (storedPostsOld.length === 0) {
-            // First visit
             await clearStore(db, STORE_OLD);
             await savePosts(db, STORE_OLD, currentPosts);
             await clearStore(db, STORE_NEW);
-            // Clear any stale notification state
             localStorage.removeItem(NOTIFICATION_STATE_KEY);
             showNotification([], Date.now(), false, initTime);
         } else {
             await clearStore(db, STORE_NEW);
             await savePosts(db, STORE_NEW, currentPosts);
-            // Compare
             const storedMap = new Map(
                 storedPosts.map(p => [p.id || generateId(p.guid || p.link || p.title), p])
             );
@@ -626,109 +479,42 @@ import { Icon } from "astro-icon/components";
             currentPosts.forEach(post => {
                 const stored = storedMap.get(generateId(post.guid));
                 if (!stored) {
-                    // New post
-                    detectedChanges.push({ ...post, isUpdated: false });
-                } else {
-                    // Check for ANY change (Title, Description, Content)
-                    const titleChanged = post.title !== stored.title;
-                    const descriptionChanged = post.description !== stored.description;
-                    const contentChanged = post.content !== stored.content;
-                    
-                    if (titleChanged || descriptionChanged || contentChanged) {
-                        const result = {};
-                        let hasChanges = false;
-                        
-                        if (contentChanged) {
-                             const d = computeDiff(stored.content, post.content);
-                             if (d) {
-                                 result.content = d;
-                                 hasChanges = true;
-                             }
-                        }
-                        
-                        if (descriptionChanged) {
-                             const d = Diff.diffLines(stored.description, post.description);
-                             if (d && d.some(p => p.added || p.removed)) {
-                                 result.description = d;
-                                 hasChanges = true;
-                             }
-                        }
-                        
-                        if (titleChanged) {
-                             const d = Diff.diffLines(stored.title, post.title);
-                             if (d && d.some(p => p.added || p.removed)) {
-                                 result.title = d;
-                                 hasChanges = true;
-                             }
-                        }
-                        
-                        if (hasChanges) {
-                            if (__diffLogEnabled) {
-                                console.groupCollapsed('[NewPostNotification] computed diff', post.title);
-                                console.log({
-                                    link: post.link,
-                                    guid: post.guid,
-                                    titleChanged,
-                                    descriptionChanged,
-                                    contentChanged
-                                });
-                                console.log('diff.raw', result);
-                                console.groupEnd();
-                            }
-                            detectedChanges.push({ 
-                                ...post, 
-                                isUpdated: true, 
-                                diff: result,
-                                diffType: 'composite'
-                            });
-                        }
-                    }
+                    detectedChanges.push({ ...post });
                 }
             });
 
             if (detectedChanges.length > 0) {
-                // Intercept: If all posts in the feed are detected as new (likely due to ID change or cache issue), suppress notification
-                const isAllNew = detectedChanges.length === currentPosts.length && detectedChanges.every(p => !p.isUpdated);
-                // Also intercept if ALL posts are detected as updated (likely a full rebuild/re-hash of content without meaningful changes)
-                const isAllUpdated = detectedChanges.length === currentPosts.length && detectedChanges.every(p => p.isUpdated);
+                const isAllNew = detectedChanges.length === currentPosts.length;
 
-                if (isAllNew || isAllUpdated) {
-                    console.log('[Notification] Intercepted "all new/updated" posts scenario. Suppressing notification.');
+                if (isAllNew) {
+                    console.log('[Notification] Intercepted "all new" posts scenario. Suppressing notification.');
                     await clearStore(db, STORE_OLD);
                     await savePosts(db, STORE_OLD, currentPosts);
                     await clearStore(db, STORE_NEW);
-                    // Clear state
                     localStorage.removeItem(NOTIFICATION_STATE_KEY);
                     showNotification([], Date.now(), false, initTime);
                     return;
                 }
 
-                // CASE 1: New updates detected
                 const timestamp = Date.now();
-                // Persist notification state
                 const state = {
                     timestamp: timestamp,
                     items: detectedChanges
                 };
                 localStorage.setItem(NOTIFICATION_STATE_KEY, JSON.stringify(state));
                 
-                // Show with Red Dot + Auto Open
                 showNotification(detectedChanges, timestamp, true, initTime);
             } else {
-                // CASE 2: No new updates
-                // Check if we have a persisted notification state
                 const persistedStateStr = localStorage.getItem(NOTIFICATION_STATE_KEY);
                 if (persistedStateStr) {
                     try {
                         const state = JSON.parse(persistedStateStr);
-                        // Show persisted items, NO Red Dot, NO Auto Open
                         showNotification(state.items, state.timestamp, false, initTime);
                     } catch (e) {
                         console.error('Failed to parse notification state', e);
                         showNotification([], Date.now(), false, initTime);
                     }
                 } else {
-                    // No updates and no history -> "No updates"
                     showNotification([], Date.now(), false, initTime);
                 }
             }
