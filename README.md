@@ -1,9 +1,7 @@
-# Fuwari For AcoFork
+# Fuwari For Yu
 
-### 有疑问？尝试 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/afoim/fuwari)
-
-> [!CAUTION]
-> 本仓库为 AcoFork 深度定制版，包含最新文章与定制功能。若作为模板进行二次开发，建议具备一定 Astro / 前端工程经验。
+\[!CAUTION]
+本仓库为 Yu 深度定制版，包含最新文章与定制功能。若作为模板进行二次开发，建议具备一定 Astro / 前端工程经验。
 
 一个基于 Astro 构建的现代化技术博客系统，面向内容创作、展示与长期维护场景。
 
@@ -63,21 +61,21 @@ pnpm preview
 
 ## 📌 常用命令
 
-| 命令 | 作用 | 典型场景 |
-| --- | --- | --- |
-| `pnpm dev` | 启动开发服务器 | 日常开发 |
-| `pnpm build` | 执行图片 CDN 处理并构建静态站点 | 发布前验证 |
-| `pnpm preview` | 预览构建产物 | 上线前检查 |
-| `pnpm type-check` | TypeScript 类型检查 | 提交前质量把关 |
-| `pnpm lint` | Biome 检查并修复 | 统一代码风格 |
-| `pnpm format` | 代码格式化 | 批量整理代码 |
-| `pnpm new-post <slug>` | 快速创建新文章 | 内容生产 |
-| `pnpm clean` | 清理未引用图片 | 资源治理 |
-| `pnpm del-space` | 规范图片命名并更新引用 | 跨平台兼容 |
-| `pnpm imgf` | 修复相邻图片空行 | 提升渲染与 diff 稳定性 |
-| `pnpm ai-summary` | 生成或更新文章 AI 摘要 | 内容增强 |
-| `pnpm watermark` | 批量添加图片水印 | 资源保护 |
-| `pnpm cdnify` | 将图片引用指向 CDN 资源 | 加速访问 |
+| 命令                     | 作用                 | 典型场景           |
+| ---------------------- | ------------------ | -------------- |
+| `pnpm dev`             | 启动开发服务器            | 日常开发           |
+| `pnpm build`           | 执行图片 CDN 处理并构建静态站点 | 发布前验证          |
+| `pnpm preview`         | 预览构建产物             | 上线前检查          |
+| `pnpm type-check`      | TypeScript 类型检查    | 提交前质量把关        |
+| `pnpm lint`            | Biome 检查并修复        | 统一代码风格         |
+| `pnpm format`          | 代码格式化              | 批量整理代码         |
+| `pnpm new-post <slug>` | 快速创建新文章            | 内容生产           |
+| `pnpm clean`           | 清理未引用图片            | 资源治理           |
+| `pnpm del-space`       | 规范图片命名并更新引用        | 跨平台兼容          |
+| `pnpm imgf`            | 修复相邻图片空行           | 提升渲染与 diff 稳定性 |
+| `pnpm ai-summary`      | 生成或更新文章 AI 摘要      | 内容增强           |
+| `pnpm watermark`       | 批量添加图片水印           | 资源保护           |
+| `pnpm cdnify`          | 将图片引用指向 CDN 资源     | 加速访问           |
 
 ## 🧩 功能模块
 
