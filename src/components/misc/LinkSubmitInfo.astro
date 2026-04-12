@@ -1,0 +1,15 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const linkText = "https://github.com/afoim/fuwari/tree/main/src/data/sponsors";
+---
+
+<div class:list={["text-sm text-white/60", className]}>
+    <p>
+        如果您已赞助，并且想加入赞助名单，<a target="_blank" href={linkText} class="transition link text-[var(--primary)] font-medium underline">请点击这里提交 PR</a>
+    </p>
+</div>

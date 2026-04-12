@@ -1,0 +1,121 @@
+import { expressiveCodeConfig } from "@/config";
+import { DARK_MODE } from "@constants/constants.ts";
+
+export function getDefaultHue(): number {
+	const fallback = "250";
+	const configCarrier = document.getElementById("config-carrier");
+	return Number.parseInt(configCarrier?.dataset.hue || fallback);
+}
+
+export function getHue(): number {
+	return getDefaultHue();
+}
+
+export function setHue(hue: number, save = true): void {
+	// Do not save to localStorage, always use config value
+	document.documentElement.style.setProperty("--hue", String(hue));
+}
+
+export function getRainbowMode(): boolean {
+	const stored = localStorage.getItem("rainbow-mode");
+	return stored === "true";
+}
+
+export function setRainbowMode(enabled: boolean): void {
+	localStorage.setItem("rainbow-mode", String(enabled));
+}
+
+export function getRainbowSpeed(): number {
+	const stored = localStorage.getItem("rainbow-speed");
+	return stored ? Number.parseFloat(stored) : 5; // Default speed
+}
+
+export function setRainbowSpeed(speed: number): void {
+	localStorage.setItem("rainbow-speed", String(speed));
+}
+
+export function getBgBlur(): number {
+	const stored = localStorage.getItem("bg-blur");
+	return stored ? Number.parseInt(stored) : 4; // Default blur is 4
+}
+
+export function setBgBlur(blur: number): void {
+	localStorage.setItem("bg-blur", String(blur));
+	const bgBox = document.getElementById("bg-box");
+	if (bgBox) {
+		// Retrieve existing hue-rotate value if any, or 0
+		const currentFilter = bgBox.style.filter || "";
+		const hueRotateMatch = currentFilter.match(/hue-rotate\((.*?)deg\)/);
+		const hueRotate = hueRotateMatch ? hueRotateMatch[1] : "0";
+		bgBox.style.setProperty(
+			"filter",
+			`blur(${blur / 16}rem) hue-rotate(${hueRotate}deg)`,
+		);
+	}
+}
+
+export function setBgHueRotate(hue: number): void {
+	const bgBox = document.getElementById("bg-box");
+	if (bgBox) {
+		// Retrieve existing blur value
+		const blur = getBgBlur();
+		bgBox.style.setProperty(
+			"filter",
+			`blur(${blur / 16}rem) hue-rotate(${hue}deg)`,
+		);
+	}
+}
+
+export function getBgHueRotate(): number {
+	const bgBox = document.getElementById("bg-box");
+	if (bgBox) {
+		const currentFilter = bgBox.style.filter || "";
+		const hueRotateMatch = currentFilter.match(/hue-rotate\((.*?)deg\)/);
+		return hueRotateMatch ? Number.parseInt(hueRotateMatch[1]) : 0;
+	}
+	return 0;
+}
+
+export function getHideBg(): boolean {
+	const stored = localStorage.getItem("hide-bg");
+	return stored === "true";
+}
+
+export function setHideBg(hide: boolean): void {
+	localStorage.setItem("hide-bg", String(hide));
+	const bgBox = document.getElementById("bg-box");
+	if (bgBox) {
+		bgBox.style.setProperty("opacity", hide ? "0" : "");
+	}
+}
+
+export function getDevMode(): boolean {
+	const stored = localStorage.getItem("dev-mode");
+	return stored === "true";
+}
+
+export function setDevMode(enabled: boolean): void {
+	localStorage.setItem("dev-mode", String(enabled));
+}
+
+export function getDevServer(): string {
+	const stored = localStorage.getItem("dev-server");
+	return stored || "";
+}
+
+export function setDevServer(server: string): void {
+	localStorage.setItem("dev-server", server);
+}
+
+export function applyThemeToDocument(): void {
+	document.documentElement.classList.add("dark");
+	document.documentElement.setAttribute(
+		"data-theme",
+		expressiveCodeConfig.theme,
+	);
+}
+
+export function setTheme(): void {
+	localStorage.setItem("theme", DARK_MODE);
+	applyThemeToDocument();
+}

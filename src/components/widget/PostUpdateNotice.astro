@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	lastUpdated: string | Date;
+}
+
+const { lastUpdated } = Astro.props;
+const updatedStr =
+	lastUpdated instanceof Date ? lastUpdated.toISOString() : lastUpdated;
+---
+
+<div id="outdated-notice" class="hidden mb-6 p-4 rounded-xl bg-[var(--license-block-bg)] border border-[var(--line-divider)] items-center gap-3 text-white/80 onload-animation">
+    <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center shrink-0">
+        <Icon name="material-symbols:info-outline-rounded" class="text-xl text-black/70" />
+    </div>
+    <div class="text-sm leading-relaxed">
+        <span id="outdated-message">正在计算文章时效性...</span>
+    </div>
+</div>
+
+<script define:vars={{ lastUpdated: updatedStr }}>
+    function updateNotice() {
+        const notice = document.getElementById('outdated-notice');
+        const message = document.getElementById('outdated-message');
+        if (!notice || !message) return;
+
+        const updatedDate = new Date(lastUpdated);
+        const now = new Date();
+        
+        const diffDaysUpdated = Math.floor(Math.abs(new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(updatedDate.getFullYear(), updatedDate.getMonth(), updatedDate.getDate())) / (1000 * 60 * 60 * 24));
+
+        if (diffDaysUpdated === 0) {
+            message.innerText = "这篇文章今天刚刚更新，内容非常新鲜。";
+            notice.classList.remove('hidden');
+            notice.classList.add('flex');
+        }
+    }
+
+    updateNotice();
+
+    document.addEventListener('swup:contentReplaced', updateNotice);
+</script>

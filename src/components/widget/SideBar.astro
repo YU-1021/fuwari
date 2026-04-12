@@ -1,0 +1,19 @@
+---
+import type { MarkdownHeading } from "astro";
+
+import Profile from "./Profile.astro";
+
+interface Props {
+	headings?: MarkdownHeading[];
+}
+---
+
+<div id="sidebar" class="w-full">
+    <div class="flex flex-col w-full gap-4 mb-4">
+        <div id="sidebar-profile-blog">
+            <Profile></Profile>
+        </div>
+    </div>
+    <div id="sidebar-sticky" class="transition-all duration-700 flex flex-col w-full gap-4 top-4 sticky top-4" style="top: calc(var(--navbar-offset, 0px) + 1rem);">
+    </div>
+</div>
