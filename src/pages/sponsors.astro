@@ -4,30 +4,37 @@ import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
 
 const breadcrumbSchema = {
-	"@context": "https://schema.org",
-	"@type": "BreadcrumbList",
-	itemListElement: [
-		{
-			"@type": "ListItem",
-			position: 1,
-			name: "首页",
-			item: Astro.site,
-		},
-		{
-			"@type": "ListItem",
-			position: 2,
-			name: "赞助支持",
-			item: new URL("/sponsors", Astro.site).toString(),
-		},
-	],
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+        {
+            "@type": "ListItem",
+            position: 1,
+            name: "首页",
+            item: Astro.site,
+        },
+        {
+            "@type": "ListItem",
+            position: 2,
+            name: "赞助支持",
+            item: new URL("/sponsors", Astro.site).toString(),
+        },
+    ],
 };
 ---
 
 <MainGridLayout title="赞助支持">
-    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+    <script
+        is:inline
+        slot="head"
+        type="application/ld+json"
+        set:html={JSON.stringify(breadcrumbSchema)}
+    />
     <div class="p-6 md:p-8 border-b border-white/10">
         <div class="flex items-center gap-2 mb-6">
-            <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-black/70">
+            <div
+                class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-black/70"
+            >
                 <Icon name="material-symbols:favorite" class="text-[1.5rem]" />
             </div>
             <h1 class="text-2xl font-bold text-white">赞助支持</h1>
@@ -49,8 +56,13 @@ const breadcrumbSchema = {
                 <!-- 支付宝 -->
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="h-10 w-10 bg-blue-500 flex items-center justify-center border border-white/10">
-                            <Icon name="simple-icons:alipay" class="text-[1.5rem] text-white" />
+                        <div
+                            class="h-10 w-10 bg-blue-500 flex items-center justify-center border border-white/10"
+                        >
+                            <Icon
+                                name="simple-icons:alipay"
+                                class="text-[1.5rem] text-white"
+                            />
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-white">支付宝</h3>
@@ -58,8 +70,15 @@ const breadcrumbSchema = {
                         </div>
                     </div>
                     <div class="ml-13">
-                        <div class="relative w-48 h-48 overflow-hidden border border-white/10" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
-                            <img src="/sponsors/alipay.svg" alt="支付宝二维码" class="w-full h-full object-cover transition duration-500" />
+                        <div
+                            class="relative w-48 h-48 overflow-hidden border border-white/10"
+                            style={`--theme-hue: ${siteConfig.themeColor.hue}`}
+                        >
+                            <img
+                                src="/sponsors/alipay.svg"
+                                alt="支付宝二维码"
+                                class="w-full h-full object-cover transition duration-500"
+                            />
                         </div>
                     </div>
                 </div>
@@ -67,17 +86,31 @@ const breadcrumbSchema = {
                 <!-- 微信支付 -->
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="h-10 w-10 bg-green-500 flex items-center justify-center border border-white/10">
-                            <Icon name="simple-icons:wechat" class="text-[1.5rem] text-white" />
+                        <div
+                            class="h-10 w-10 bg-green-500 flex items-center justify-center border border-white/10"
+                        >
+                            <Icon
+                                name="simple-icons:wechat"
+                                class="text-[1.5rem] text-white"
+                            />
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-white">微信支付</h3>
+                            <h3 class="text-lg font-bold text-white">
+                                微信支付
+                            </h3>
                             <p class="text-sm text-white/60">扫码支付</p>
                         </div>
                     </div>
                     <div class="ml-13">
-                        <div class="relative w-48 h-48 overflow-hidden border border-white/10" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
-                            <img src="/sponsors/wechat.svg" alt="微信支付二维码" class="w-full h-full object-cover transition duration-500" />
+                        <div
+                            class="relative w-48 h-48 overflow-hidden border border-white/10"
+                            style={`--theme-hue: ${siteConfig.themeColor.hue}`}
+                        >
+                            <img
+                                src="/sponsors/wechat.svg"
+                                alt="微信支付二维码"
+                                class="w-full h-full object-cover transition duration-500"
+                            />
                         </div>
                     </div>
                 </div>
@@ -88,9 +121,14 @@ const breadcrumbSchema = {
         <div class="mb-8 pb-6 border-b border-white/10">
             <h2 class="text-xl font-bold text-white mb-4">其他支持方式</h2>
             <div class="space-y-0">
-                <div class="p-4 hover:bg-white/5 transition border-b border-white/10 last:border-b-0">
+                <div
+                    class="p-4 hover:bg-white/5 transition border-b border-white/10 last:border-b-0"
+                >
                     <div class="flex items-center gap-2 mb-1">
-                        <Icon name="material-symbols:share" class="text-[1.2rem] text-[var(--primary)]" />
+                        <Icon
+                            name="material-symbols:share"
+                            class="text-[1.2rem] text-[var(--primary)]"
+                        />
                         <span class="font-semibold text-white">分享推荐</span>
                     </div>
                     <p class="text-sm text-white/60 ml-7">
@@ -98,19 +136,14 @@ const breadcrumbSchema = {
                     </p>
                 </div>
 
-                <div class="p-4 hover:bg-white/5 transition border-b border-white/10 last:border-b-0">
+                <div
+                    class="p-4 hover:bg-white/5 transition border-b border-white/10 last:border-b-0"
+                >
                     <div class="flex items-center gap-2 mb-1">
-                        <Icon name="material-symbols:comment" class="text-[1.2rem] text-[var(--primary)]" />
-                        <span class="font-semibold text-white">留言互动</span>
-                    </div>
-                    <p class="text-sm text-white/60 ml-7">
-                        在文章下方留下您的想法
-                    </p>
-                </div>
-
-                <div class="p-4 hover:bg-white/5 transition border-b border-white/10 last:border-b-0">
-                    <div class="flex items-center gap-2 mb-1">
-                        <Icon name="material-symbols:star" class="text-[1.2rem] text-[var(--primary)]" />
+                        <Icon
+                            name="material-symbols:star"
+                            class="text-[1.2rem] text-[var(--primary)]"
+                        />
                         <span class="font-semibold text-white">关注订阅</span>
                     </div>
                     <p class="text-sm text-white/60 ml-7">
