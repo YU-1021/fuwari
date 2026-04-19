@@ -1,9 +1,11 @@
 ---
-title: 还我电脑课
+title: 还我电脑课！
 published: 2026-04-19
 description: "祝您有一个愉快的电脑课！"
 image: "./cover.jpg"
-draft: true
+tags: [class]
+draft: false 
+lang: ''
 ---
 
 > 免责声明：本内容仅限个人学习与研究，请于下载后24小时内删除相关软件，严禁用于商业用途。
