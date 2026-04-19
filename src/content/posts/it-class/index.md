@@ -10,13 +10,15 @@ lang: ''
 
 > 免责声明：本内容仅限个人学习与研究，请于下载后24小时内删除相关软件，严禁用于商业用途。
 
-### 第一步：下载kill.bat脚本杀死ComputerClassroom
+### 第一步：下载kill.bat脚本杀死ComputerClassroom程序
 
 #### 下载方式
 
 直接下载：[点我下载](https://f.114591.xyz/kill.bat)
 
-蓝奏云盘：https://wwamq.lanzoue.com/i6QXO3nltfyb 密码:1234
+蓝奏云盘：
+
+https://wwamq.lanzoue.com/i6QXO3nltfyb 密码:1234
 
 #### 打开脚本
 
@@ -32,13 +34,17 @@ lang: ''
 
 直接下载：[点我下载](https://f.114591.xyz/JiYuKill.exe)
 
-蓝奏云盘：https://wwamq.lanzoue.com/icUgj3nlu77c 密码:1234
+蓝奏云盘
+
+https://wwamq.lanzoue.com/iptSR3nm7fri 密码:1234
 
 #### 2、再见极域
 
 直接下载：[点我下载](https://f.114591.xyz/%E5%86%8D%E8%A7%81%E6%9E%81%E5%9F%9F.exe)
 
-蓝奏云盘：https://wwamq.lanzoue.com/iNECx3nlud8j 密码:1234
+蓝奏云盘：
+
+https://wwamq.lanzoue.com/iNECx3nlud8j 密码:1234
 
 
 
