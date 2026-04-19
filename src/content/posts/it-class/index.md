@@ -14,7 +14,7 @@ lang: ''
 
 #### 下载方式
 
-直接下载：[点我下载]([Not Found](https://f.114591.xyz/kill.bat))
+直接下载：[点我下载](https://f.114591.xyz/kill.bat)
 
 蓝奏云盘：https://wwamq.lanzoue.com/i6QXO3nltfyb 密码:1234
 
